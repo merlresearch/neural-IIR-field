@@ -1,0 +1,41 @@
+# Copyright (C) 2023 Mitsubishi Electric Research Laboratories (MERL)
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+dataset:
+  name: exp/cipic
+  target_sidxs: [166]
+  ref_range: [0, 1]
+
+init_path:
+
+device: cuda:0
+seed: 0
+num_workers: 4
+batch_size: 64
+num_epoch: 500
+patience: 500
+adaptation_batch_size: 16
+adaptation_epoch: 500
+
+model:
+  name: SingleSubjectMgaNF
+  config:
+    hidden_features: 512
+    hidden_layers: 4
+    out_features: 514
+    scale: 1.
+    dropout: 0.1
+
+learning:
+  adaptation_optimizer:
+    name: RAdam
+    config:
+      lr: 5.0e-4
+      weight_decay: 1.0e-6
+  clip: 10.0
+
+loss:
+  mag_weight: 0.1
+  nfft: 512
+  sr: 44100

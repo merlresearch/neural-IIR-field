@@ -1,0 +1,63 @@
+# Copyright (C) 2023 Mitsubishi Electric Research Laboratories (MERL)
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+dataset:
+  name: exp/hutubs
+  sidxs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87]
+  target_sidxs: [97]
+  ref_range: [0, 1]
+
+init_path:
+
+device: cuda:0
+seed: 0
+num_workers: 8
+batch_size: 64
+num_epoch: 1000
+patience: 100
+adaptation_batch_size: 16
+adaptation_epoch: 1000
+
+model:
+  name: MultiSubjectNIIRFPEFT
+  config:
+    hidden_features: 512
+    hidden_layers: 4
+    scale: 1.
+    dropout: 0.1
+    n_listeners: 96
+    peft_type: lora
+
+learning:
+  optimizer:
+    name: RAdam
+    config:
+      lr: 5.0e-4
+      weight_decay: 1.0e-6
+  scheduler:
+    name: ReduceLROnPlateau
+    config:
+      mode: min
+      factor: 0.9
+      patience: 30
+  adaptation_optimizer:
+    name: AdamW
+    config:
+      lr: 3.0e-3
+      weight_decay: 1.0e-6
+  adaptation_scheduler:
+    name: ReduceLROnPlateau
+    config:
+      mode: min
+      factor: 0.9
+      patience: 30
+  clip: 10.0
+loss:
+  mag_weight: 0.1
+  nfft: 512
+  sr: 44100
+
+preprocess:
+  fcs: [100, 732, 1206, 1680, 2153, 2799, 3575, 4005, 4565, 5469, 6331, 7106, 7752, 8441, 9130, 9776, 10379, 11025, 11671, 12317, 12920, 13566, 14126, 14470, 14901, 15159, 15805, 16408, 17054, 17743, 18389, 19035, 19638, 22000]
+  n_bins: 32
